@@ -2,6 +2,12 @@ function createSketch (app) {
 
   const birds = [];
 
+  var running = true;
+
+  window.addEventListener('keydown', (event) => {
+    if(event.keyCode === 13) running = !running;
+  })
+
   app.setup = () => {
     app.createCanvas(window.innerWidth, window.innerHeight, p5.WEBGL);
 
@@ -17,7 +23,7 @@ function createSketch (app) {
     app.background(0);
 
     birds.forEach(bird => {
-      bird.update();
+      if(running) bird.update();
       bird.draw();
     });
   }
