@@ -10,13 +10,18 @@
 
   <aside class="modifiers">
     <label>
-      <input type="checkbox" class="modifiers__followmouse" />
+      <input type="checkbox" data-prop="followMouse" />
       Seguir mouse
     </label>
 
     <label>
       Fuerza del mouse
-      <input type="range" min=".1" max="5" step=".1" value="1" class="modifiers__mousemag" />
+      <input type="range" min=".1" max="5" step=".1" value="1" data-prop="mouseMag" />
+    </label>
+
+    <label>
+      Velocidad
+      <input type="range" min="1" max="20" step=".1" value="5" data-prop="speed" />
     </label>
   </aside>
 

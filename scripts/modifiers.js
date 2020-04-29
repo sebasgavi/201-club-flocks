@@ -1,14 +1,18 @@
 function setModifiers() {
-  const followMouse = document.querySelector('.modifiers__followmouse');
-  const mouseMag = document.querySelector('.modifiers__mousemag');
+  const inputs = document.querySelectorAll('.modifiers input');
+
   function update (){
-    Bird.followMouse = followMouse.checked;
-    Bird.mouseMag = parseFloat(mouseMag.value);
-    
-    // ocultar slider de mouseMag si no está siguiendo el mouse
-    mouseMag.parentElement.style.display = followMouse.checked ? 'block' : 'none';
+    inputs.forEach(elem => {
+      const prop = elem.getAttribute('data-prop');
+      const val = elem.type === 'checkbox' ? elem.checked : parseFloat(elem.value);
+      Bird[prop] = val;
+
+      if(prop === 'mouseMag'){
+        // ocultar slider de mouseMag si no está siguiendo el mouse
+        elem.parentElement.style.display = Bird.followMouse ? 'block' : 'none';
+      }
+    });
   }
-  followMouse.addEventListener('input', update);
-  mouseMag.addEventListener('input', update);
+  inputs.forEach((elem) => elem.addEventListener('input', update));
   update();
 }

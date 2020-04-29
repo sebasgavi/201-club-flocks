@@ -3,6 +3,9 @@ class Bird {
 
   static followMouse = false;
   static mouseMag = 1;
+  static radius = 150;
+  static behindAngle = Math.PI / 2;
+  static speed = 5;
 
   constructor(app, birds, color, selected) {
     this.app = app;
@@ -13,12 +16,7 @@ class Bird {
     this.selected = selected;
 
     this.count = Math.random() * 10000;
-
-    this.radius = 150;
-    this.behindAngle = Math.PI / 2;
-
-    this.speed = 5;
-    this.vel = p5.Vector.random2D().mult(this.speed);
+    this.vel = p5.Vector.random2D().mult(Bird.speed);
   }
 
   update() {
@@ -43,7 +41,7 @@ class Bird {
       mouse.sub(this.pos);
       mouse.setMag(Bird.mouseMag);
       this.vel.add(mouse);
-      this.vel.setMag(this.speed);
+      this.vel.setMag(Bird.speed);
     }
 
     this.flockBehavior();
@@ -56,7 +54,7 @@ class Bird {
 
       const dist = this.pos.dist(bird.pos);
 
-      if(dist < this.radius){
+      if(dist < Bird.radius){
 
         // calcular ángulo entre birds
         const v2 = p5.Vector.sub(this.pos, bird.pos);
@@ -66,10 +64,10 @@ class Bird {
         const ang = Math.acos(dot/1);
 
         // si el otro bird está en el área de visibilidad
-        if(ang > this.behindAngle / 2){
+        if(ang > Bird.behindAngle / 2){
           // alejarlo si está muy cerca
           const cross = Math.sign((v1.x * v2.y) - (v1.y * v2.x));
-          const close = 1 - dist / this.radius;
+          const close = 1 - dist / Bird.radius;
           this.vel.rotate( (ang/5) * cross * close*close*close );
   
           // sumar vectores que están dentro del área al heading
@@ -82,7 +80,7 @@ class Bird {
           const far = 1 - close;
           dir.setMag(.2 * far*far*far);
           this.vel.add(dir);
-          this.vel.setMag(this.speed);
+          this.vel.setMag(Bird.speed);
         }
       }
     });
@@ -90,7 +88,7 @@ class Bird {
     // aplicar ángulo de heading
     heading.setMag(1);
     this.vel.add(heading);
-    this.vel.setMag(this.speed);
+    this.vel.setMag(Bird.speed);
   }
 
   draw() {
@@ -101,7 +99,7 @@ class Bird {
     this.app.noStroke();
     if(this.selected) {
       this.app.fill(255, 30);
-      this.app.arc(0, 0, this.radius*2, this.radius*2, this.behindAngle/2 + Math.PI/2, Math.PI * 2.5 - this.behindAngle/2);
+      this.app.arc(0, 0, Bird.radius*2, Bird.radius*2, Bird.behindAngle/2 + Math.PI/2, Math.PI * 2.5 - Bird.behindAngle/2);
     }
     this.app.fill(this.color);
     this.app.triangle(
