@@ -2,6 +2,7 @@
 class Bird {
 
   static followMouse = false;
+  static mouseMag = 1;
 
   constructor(app, birds, color, selected) {
     this.app = app;
@@ -40,7 +41,7 @@ class Bird {
       // seguir posición del mouse
       const mouse = new p5.Vector(this.app.mouseX, this.app.mouseY);
       mouse.sub(this.pos);
-      mouse.setMag(1);
+      mouse.setMag(Bird.mouseMag);
       this.vel.add(mouse);
       this.vel.setMag(this.speed);
     }
