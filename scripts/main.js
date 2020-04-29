@@ -17,10 +17,7 @@ function createSketch (app) {
       birds.push(new Bird(app, birds, color, i === 99));
     }
 
-    const followMouse = document.querySelector('.modifiers__followmouse');
-    followMouse.addEventListener('input', function(ev){
-      Bird.followMouse = followMouse.checked;
-    });
+    setModifiers();
   }
   
 
