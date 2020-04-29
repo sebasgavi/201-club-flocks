@@ -14,7 +14,8 @@ class Bird {
     this.radius = 150;
     this.behindAngle = Math.PI / 2;
 
-    this.vel = p5.Vector.random2D().mult(5);
+    this.speed = 5;
+    this.vel = p5.Vector.random2D().mult(this.speed);
   }
 
   update() {
@@ -31,6 +32,52 @@ class Bird {
     if(this.pos.x > window.innerWidth + padding) this.pos.x = -padding;
     if(this.pos.y < -padding) this.pos.y = window.innerHeight + padding;
     if(this.pos.y > window.innerHeight + padding) this.pos.y = -padding;
+
+    this.flockBehavior();
+  }
+
+  flockBehavior() {
+    const heading = this.vel.copy();
+    this.birds.forEach(bird => {
+      if(bird === this) return;
+
+      const dist = this.pos.dist(bird.pos);
+
+      if(dist < this.radius){
+
+        // calcular ángulo entre birds
+        const v2 = p5.Vector.sub(this.pos, bird.pos);
+        v2.normalize();
+        const v1 = this.vel.copy().normalize();
+        const dot = p5.Vector.dot(v1, v2);
+        const ang = Math.acos(dot/1);
+
+        // si el otro bird está en el área de visibilidad
+        if(ang > this.behindAngle / 2){
+          // alejarlo si está muy cerca
+          const cross = Math.sign((v1.x * v2.y) - (v1.y * v2.x));
+          const close = 1 - dist / this.radius;
+          this.vel.rotate( (ang/5) * cross * close*close*close );
+  
+          // sumar vectores que están dentro del área al heading
+          const headingMod = bird.vel.copy();
+          headingMod.mult(close);
+          heading.add(headingMod);
+  
+          // debe acercarse si está dentro del área, pero lo afecta más mientras esté más lejos
+          const dir = p5.Vector.sub(bird.pos, this.pos);
+          const far = 1 - close;
+          dir.setMag(.2 * far*far*far);
+          this.vel.add(dir);
+          this.vel.setMag(this.speed);
+        }
+      }
+    });
+
+    // aplicar ángulo de heading
+    heading.setMag(1);
+    this.vel.add(heading);
+    this.vel.setMag(this.speed);
   }
 
   draw() {
@@ -41,8 +88,7 @@ class Bird {
     this.app.noStroke();
     if(this.selected) {
       this.app.fill(255, 30);
-      //this.app.arc(0, 0, this.radius*2, this.radius*2, this.behindAngle/2 + Math.PI/2, Math.PI * 2.5 - this.behindAngle/2);
-      //this.app.ellipse(0, 0, this.radius);
+      this.app.arc(0, 0, this.radius*2, this.radius*2, this.behindAngle/2 + Math.PI/2, Math.PI * 2.5 - this.behindAngle/2);
     }
     this.app.fill(this.color);
     this.app.triangle(
@@ -51,39 +97,5 @@ class Bird {
       0, -d * 2,
     );
     this.app.pop();
-
-    this.birds.forEach(bird => {
-      if(bird === this) return;
-
-      const dist = this.pos.dist(bird.pos);
-
-      if(dist < this.radius){
-
-        const v2 = p5.Vector.sub(this.pos, bird.pos);
-        v2.normalize();
-  
-        const v1 = this.vel.copy().normalize();
-        
-        const dot = p5.Vector.dot(v1, v2);
-        const ang = Math.acos(dot/1);
-
-        const cross = Math.sign((v1.x * v2.y) - (v1.y * v2.x));
-
-        const close = 1 - dist / this.radius;
-
-        this.vel.rotate( (ang/5) * cross * close*close*close );
-
-        if(ang > this.behindAngle / 2){
-
-          if(false && this.selected){
-            this.app.stroke(this.color);
-            this.app.line(this.pos.x, this.pos.y, bird.pos.x, bird.pos.y);
-            this.app.noStroke();
-            this.app.fill(this.app.color(255,255,0));
-            this.app.text(close.toFixed(3), bird.pos.x + 10, bird.pos.y);
-          }
-        }
-      }
-    });
   }
 }
