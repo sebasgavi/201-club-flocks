@@ -1,6 +1,8 @@
 
 class Bird {
 
+  static followMouse = false;
+
   constructor(app, birds, color, selected) {
     this.app = app;
     this.birds = birds;
@@ -34,12 +36,14 @@ class Bird {
     if(this.pos.y < -padding) this.pos.y = window.innerHeight + padding;
     if(this.pos.y > window.innerHeight + padding) this.pos.y = -padding;
 
-    // seguir posición del mouse
-    const mouse = new p5.Vector(this.app.mouseX, this.app.mouseY);
-    mouse.sub(this.pos);
-    mouse.setMag(1);
-    this.vel.add(mouse);
-    this.vel.setMag(this.speed);
+    if(Bird.followMouse){
+      // seguir posición del mouse
+      const mouse = new p5.Vector(this.app.mouseX, this.app.mouseY);
+      mouse.sub(this.pos);
+      mouse.setMag(1);
+      this.vel.add(mouse);
+      this.vel.setMag(this.speed);
+    }
 
     this.flockBehavior();
   }
