@@ -4,7 +4,7 @@ class Bird {
   static followMouse = false;
   static mouseMag = 1;
   static radius = 150;
-  static behindAngle = Math.PI / 2;
+  static behindAngle = .5;
   static speed = 5;
 
   constructor(app, birds, color, selected) {
@@ -64,7 +64,7 @@ class Bird {
         const ang = Math.acos(dot/1);
 
         // si el otro bird está en el área de visibilidad
-        if(ang > Bird.behindAngle / 2){
+        if(ang > Math.PI * Bird.behindAngle * .5){
           // alejarlo si está muy cerca
           const cross = Math.sign((v1.x * v2.y) - (v1.y * v2.x));
           const close = 1 - dist / Bird.radius;
@@ -99,7 +99,7 @@ class Bird {
     this.app.noStroke();
     if(this.selected) {
       this.app.fill(255, 30);
-      this.app.arc(0, 0, Bird.radius*2, Bird.radius*2, Bird.behindAngle/2 + Math.PI/2, Math.PI * 2.5 - Bird.behindAngle/2);
+      this.app.arc(0, 0, Bird.radius*2, Bird.radius*2, Math.PI * Bird.behindAngle * .5 + Math.PI/2, Math.PI * 2.5 - Math.PI * Bird.behindAngle * .5);
     }
     this.app.fill(this.color);
     this.app.triangle(
